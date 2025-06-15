@@ -6,10 +6,10 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/stainless-sdks/earn-app-go/internal/apijson"
-	"github.com/stainless-sdks/earn-app-go/internal/requestconfig"
-	"github.com/stainless-sdks/earn-app-go/option"
-	"github.com/stainless-sdks/earn-app-go/packages/respjson"
+	"github.com/BoomchainLabs/release-please/internal/apijson"
+	"github.com/BoomchainLabs/release-please/internal/requestconfig"
+	"github.com/BoomchainLabs/release-please/option"
+	"github.com/BoomchainLabs/release-please/packages/respjson"
 )
 
 // StatService contains methods and other services that help with interacting with

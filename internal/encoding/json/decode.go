@@ -14,7 +14,7 @@ import (
 	"encoding"
 	"encoding/base64"
 	"fmt"
-	"github.com/stainless-sdks/earn-app-go/internal/encoding/json/shims"
+	"github.com/BoomchainLabs/release-please/internal/encoding/json/shims"
 	"reflect"
 	"strconv"
 	"strings"

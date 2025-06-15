@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/earn-app-go"
-	"github.com/stainless-sdks/earn-app-go/internal"
-	"github.com/stainless-sdks/earn-app-go/option"
+	"github.com/BoomchainLabs/release-please"
+	"github.com/BoomchainLabs/release-please/internal"
+	"github.com/BoomchainLabs/release-please/option"
 )
 
 type closureTransport struct {

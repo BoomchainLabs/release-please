@@ -2,7 +2,7 @@ package apijson
 
 import (
 	"errors"
-	"github.com/stainless-sdks/earn-app-go/packages/param"
+	"github.com/BoomchainLabs/release-please/packages/param"
 	"reflect"
 
 	"github.com/tidwall/gjson"

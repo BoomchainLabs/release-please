@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/earn-app-go"
-	"github.com/stainless-sdks/earn-app-go/internal/testutil"
-	"github.com/stainless-sdks/earn-app-go/option"
+	"github.com/BoomchainLabs/release-please"
+	"github.com/BoomchainLabs/release-please/internal/testutil"
+	"github.com/BoomchainLabs/release-please/option"
 )
 
 func TestMissionGet(t *testing.T) {

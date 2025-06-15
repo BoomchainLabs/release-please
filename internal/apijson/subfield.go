@@ -1,7 +1,7 @@
 package apijson
 
 import (
-	"github.com/stainless-sdks/earn-app-go/packages/respjson"
+	"github.com/BoomchainLabs/release-please/packages/respjson"
 	"reflect"
 )
 
