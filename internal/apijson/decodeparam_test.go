@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/earn-app-go/internal/apijson"
-	"github.com/stainless-sdks/earn-app-go/packages/param"
+	"github.com/BoomchainLabs/release-please/internal/apijson"
+	"github.com/BoomchainLabs/release-please/packages/param"
 	"reflect"
 	"testing"
 )

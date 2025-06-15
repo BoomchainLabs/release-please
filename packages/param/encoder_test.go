@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/earn-app-go/packages/param"
+	"github.com/BoomchainLabs/release-please/packages/param"
 )
 
 type Struct struct {

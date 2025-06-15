@@ -41,7 +41,7 @@ To use a local version of this library from source in another project, edit the 
 directive. This can be done through the CLI with the following:
 
 ```sh
-$ go mod edit -replace github.com/stainless-sdks/earn-app-go=/path/to/earn-app-go
+$ go mod edit -replace github.com/BoomchainLabs/release-please=/path/to/release-please
 ```
 
 ## Running tests

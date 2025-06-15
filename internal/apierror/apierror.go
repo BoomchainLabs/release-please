@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/stainless-sdks/earn-app-go/internal/apijson"
-	"github.com/stainless-sdks/earn-app-go/packages/respjson"
+	"github.com/BoomchainLabs/release-please/internal/apijson"
+	"github.com/BoomchainLabs/release-please/packages/respjson"
 )
 
 // Error represents an error that originates from the API, i.e. when a request is
