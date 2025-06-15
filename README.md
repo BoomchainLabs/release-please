@@ -1,276 +1,486 @@
-<img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
+# Earn App Go API Library
 
-# [Release Please](https://github.com/googleapis/release-please)
+<a href="https://pkg.go.dev/github.com/stainless-sdks/earn-app-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/earn-app-go.svg" alt="Go Reference"></a>
 
-[![npm version](https://img.shields.io/npm/v/release-please.svg)](https://www.npmjs.org/package/release-please)
-[![codecov](https://img.shields.io/codecov/c/github/googleapis/release-please/main.svg?style=flat)](https://codecov.io/gh/googleapis/release-please)
+The Earn App Go library provides convenient access to the [Earn App REST API](https://lerfhub.xyz)
+from applications written in Go.
 
-Release Please automates CHANGELOG generation, the creation of GitHub releases,
-and version bumps for your projects.
+It is generated with [Stainless](https://www.stainless.com/).
 
-It does so by parsing your
-git history, looking for [Conventional Commit messages](https://www.conventionalcommits.org/),
-and creating release PRs.
+## Installation
 
-It does not handle publication to package managers or handle complex branch
-management.
-
-## What's a Release PR?
-
-Rather than continuously releasing what's landed to your default branch,
-release-please maintains Release PRs:
-
-<img width="400" src="/screen.png">
-
-These Release PRs are kept up-to-date as additional work is merged. When you're
-ready to tag a release, simply merge the release PR. Both squash-merge and
-merge commits work with Release PRs.
-
-When the Release PR is merged, release-please takes the following steps:
-
-1. Updates your changelog file (for example `CHANGELOG.md`), along with other language specific files (for example `package.json`).
-2. Tags the commit with the version number
-3. Creates a GitHub Release based on the tag
-
-You can tell where the Release PR is in its lifecycle by the status label on the
-PR itself:
-
-- `autorelease: pending` is the initial state of the Release PR before it is merged
-- `autorelease: tagged` means that the Release PR has been merged and the release has been tagged in GitHub
-- `autorelease: snapshot` is a special state for snapshot version bumps
-- `autorelease: published` means that a GitHub release has been published based on the Release PR (_release-please does not automatically add this tag, but we recommend it as a convention for publication tooling_).
-
-## How should I write my commits?
-
-Release Please assumes you are using [Conventional Commit messages](https://www.conventionalcommits.org/).
-
-The most important prefixes you should have in mind are:
-
-* `fix:` which represents bug fixes, and correlates to a [SemVer](https://semver.org/)
-  patch.
-* `feat:` which represents a new feature, and correlates to a SemVer minor.
-* `feat!:`,  or `fix!:`, `refactor!:`, etc., which represent a breaking change
-  (indicated by the `!`) and will result in a SemVer major.
-
-### Linear git commit history (use squash-merge)
-
-We **highly** recommend that you use squash-merges when merging pull requests.
-A linear git history makes it much easier to:
-
-* Follow history - commits are sorted by merge date and are not mixed between
-  pull requests
-* Find and revert bugs - `git bisect` is helpful for tracking down which
-  change introduced a bug
-* Control the release-please changelog - when you merge a PR, you may have
-  commit messages that make sense within the scope of the PR, but don't
-  make sense when merged in the main branch. For example, you may have
-  `feat: introduce feature A` and then `fix: some bugfix introduced in
-  the first commit`. The `fix` commit is actually irrelevant to the release
-  notes as there was never a bug experienced in the main branch.
-* Keep a clean main branch - if you use something like red/green development
-  (create a failing test in commit A, then fix in commit B) and merge (or
-  rebase-merge), then there will be points in time in your main branch where
-  tests do not pass.
-
-### What if my PR contains multiple fixes or features?
-
-Release Please allows you to represent multiple changes in a single commit,
-using footers:
-
-```txt
-feat: adds v4 UUID to crypto
-
-This adds support for v4 UUIDs to the library.
-
-fix(utils): unicode no longer throws exception
-  PiperOrigin-RevId: 345559154
-  BREAKING-CHANGE: encode method no longer throws.
-  Source-Link: googleapis/googleapis@5e0dcb2
-
-feat(utils): update encode to support unicode
-  PiperOrigin-RevId: 345559182
-  Source-Link: googleapis/googleapis@e5eef86
+```go
+import (
+	"github.com/stainless-sdks/earn-app-go" // imported as earnapp
+)
 ```
 
-The above commit message will contain:
+Or to pin the version:
 
-1. an entry for the **"adds v4 UUID to crypto"** feature.
-2. an entry for the fix **"unicode no longer throws exception"**, along with a note
-  that it's a breaking change.
-3. an entry for the feature **"update encode to support unicode"**.
-
-:warning: **Important:** The additional messages must be added to the bottom of the commit.
-
-## How do I change the version number?
-
-When a commit to the main branch has `Release-As: x.x.x` (case insensitive) in the **commit body**, Release Please will open a new pull request for the specified version.
-
-**Empty commit example:**
-
-`git commit --allow-empty -m "chore: release 2.0.0" -m "Release-As: 2.0.0"` results in the following commit message:
-
-```txt
-chore: release 2.0.0
-
-Release-As: 2.0.0
+```sh
+go get -u 'github.com/stainless-sdks/earn-app-go@v0.0.1-alpha.0'
 ```
 
-## How can I fix release notes?
+## Requirements
 
-If you have merged a pull request and would like to amend the commit message
-used to generate the release notes for that commit, you can edit the body of
-the merged pull requests and add a section like:
+This library requires Go 1.18+.
+
+## Usage
+
+The full API of this library can be found in [api.md](api.md).
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/stainless-sdks/earn-app-go"
+	"github.com/stainless-sdks/earn-app-go/option"
+)
+
+func main() {
+	client := earnapp.NewClient(
+		option.WithAPIKey("My API Key"),      // defaults to os.LookupEnv("EARN_APP_API_KEY")
+		option.WithEnvironmentEnvironment1(), // defaults to option.WithEnvironmentProduction()
+	)
+	user, err := client.Users.New(context.TODO(), earnapp.UserNewParams{
+		WalletAddress: "walletAddress",
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("%+v\n", user.ID)
+}
 
 ```
-BEGIN_COMMIT_OVERRIDE
-feat: add ability to override merged commit message
 
-fix: another message
-chore: a third message
-END_COMMIT_OVERRIDE
+### Request fields
+
+The earnapp library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
+semantics from the Go 1.24+ `encoding/json` release for request fields.
+
+Required primitive fields (`int64`, `string`, etc.) feature the tag <code>\`json:"...,required"\`</code>. These
+fields are always serialized, even their zero values.
+
+Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `earnapp.String(string)`, `earnapp.Int(int64)`, etc.
+
+Any `param.Opt[T]`, map, slice, struct or string enum uses the
+tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
+
+The `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
+
+```go
+p := earnapp.ExampleParams{
+	ID:   "id_xxx",              // required property
+	Name: earnapp.String("..."), // optional property
+
+	Point: earnapp.Point{
+		X: 0,              // required field will serialize as 0
+		Y: earnapp.Int(1), // optional field will serialize as 1
+		// ... omitted non-required fields will not be serialized
+	},
+
+	Origin: earnapp.Origin{}, // the zero value of [Origin] is considered omitted
+}
 ```
 
-The next time Release Please runs, it will use that override section as the
-commit message instead of the merged commit message.
+To send `null` instead of a `param.Opt[T]`, use `param.Null[T]()`.
+To send `null` instead of a struct `T`, use `param.NullStruct[T]()`.
 
-:warning: **Important:** This feature will not work with plain merges because
-release-please does not know which commit(s) to apply the override to. [We
-recommend using squash-merge instead](#linear-git-commit-history-use-squash-merge).
+```go
+p.Name = param.Null[string]()       // 'null' instead of string
+p.Point = param.NullStruct[Point]() // 'null' instead of struct
 
-## Release Please bot does not create a release PR. Why?
+param.IsNull(p.Name)  // true
+param.IsNull(p.Point) // true
+```
 
-### Step 1: Ensure releasable units are merged
+Request structs contain a `.SetExtraFields(map[string]any)` method which can send non-conforming
+fields in the request body. Extra fields overwrite any struct fields with a matching
+key. For security reasons, only use `SetExtraFields` with trusted data.
 
-Release Please creates a release pull request after it notices the default branch
-contains "releasable units" since the last release.
-A releasable unit is a commit to the branch with one of the following
-prefixes: "feat", "fix", and "deps".
-(A "chore" or "build" commit is not a releasable unit.)
+To send a custom value instead of a struct, use `param.Override[T](value)`.
 
-Some languages have their specific releasable unit configuration. For example,
-"docs" is a prefix for releasable units in Java and Python.
+```go
+// In cases where the API specifies a given type,
+// but you want to send something else, use [SetExtraFields]:
+p.SetExtraFields(map[string]any{
+	"x": 0.01, // send "x" as a float instead of int
+})
 
-### Step 2: Ensure no `autorelease: pending` or `autorelease: triggered` label in an old PR
+// Send a number instead of an object
+custom := param.Override[earnapp.FooParams](12)
+```
 
-Check existing pull requests labelled with `autorelease: pending` or
-`autorelease: triggered` label.
-Due to GitHub API failures, it's possible that the tag was not removed
-correctly upon a previous release and Release Please thinks that the previous release is
-still pending.
-If you're certain that there's no pending release, remove the
-`autorelease: pending` or `autorelease: triggered` label.
+### Request unions
 
-For the GitHub application users, Release Please will not create a new pull request
-if there's an existing pull request labeled as `autorelease: pending`.
-To confirm this case, search for a pull request with the label.
-(It's very likely it's the latest release pull request.)
-If you find a release pull request with the label and it is not going to be released
-(or already released), then remove the `autorelease: pending` label and re-run Release
-Please.
+Unions are represented as a struct with fields prefixed by "Of" for each of it's variants,
+only one field can be non-zero. The non-zero field will be serialized.
 
-### Step 3: Rerun Release Please
+Sub-properties of the union can be accessed via methods on the union struct.
+These methods return a mutable pointer to the underlying data, if present.
 
-If you think Release Please missed creating a release PR after a pull request
-with a releasable unit has been merged, please re-run `release-please`. If you are using
-the GitHub application, add `release-please:force-run` label to the merged pull request. If
-you are using the action, look for the failed invocation and retry the workflow run.
-Release Please will process the pull request immediately to find releasable units.
+```go
+// Only one field can be non-zero, use param.IsOmitted() to check if a field is set
+type AnimalUnionParam struct {
+	OfCat *Cat `json:",omitzero,inline`
+	OfDog *Dog `json:",omitzero,inline`
+}
 
-## Strategy (Language) types supported
+animal := AnimalUnionParam{
+	OfCat: &Cat{
+		Name: "Whiskers",
+		Owner: PersonParam{
+			Address: AddressParam{Street: "3333 Coyote Hill Rd", Zip: 0},
+		},
+	},
+}
 
-Release Please automates releases for the following flavors of repositories:
+// Mutating a field
+if address := animal.GetOwner().GetAddress(); address != nil {
+	address.ZipCode = 94304
+}
+```
 
-| release type        | description |
-|---------------------|---------------------------------------------------------|
-| `bazel`             | [A Bazel module, with a MODULE.bazel and a CHANGELOG.md](https://bazel.build/external/module) |
-| `dart`              | A repository with a pubspec.yaml and a CHANGELOG.md |
-| `elixir`            | A repository with a mix.exs and a CHANGELOG.md |
-| `go`                | A repository with a CHANGELOG.md |
-| `helm`              | A repository with a Chart.yaml and a CHANGELOG.md |
-| `java`              | [A strategy that generates SNAPSHOT version after each release](docs/java.md) |
-| `krm-blueprint`     | [A kpt package, with 1 or more KRM files and a CHANGELOG.md](https://github.com/GoogleCloudPlatform/blueprints/tree/main/catalog/project) |
-| `maven`             | [Strategy for Maven projects, generates SNAPSHOT version after each release and updates `pom.xml` automatically](docs/java.md) |
-| `node`              | [A Node.js repository, with a package.json and CHANGELOG.md](https://github.com/yargs/yargs) |
-| `expo`              | [An Expo based React Native repository, with a package.json, app.json and CHANGELOG.md](https://github.com/dmi3y/expo-release-please-example) |
-| `ocaml`             | [An OCaml repository, containing 1 or more opam or esy files and a CHANGELOG.md](https://github.com/grain-lang/binaryen.ml) |
-| `php`               | A repository with a composer.json and a CHANGELOG.md |
-| `python`            | [A Python repository with a pyproject.toml, &lt;project&gt;/\_\_init\_\_.py, CHANGELOG.md or optionally a setup.py, setup.cfg](https://github.com/googleapis/python-storage) |
-| `R`               | A repository with a DESCRIPTION and a NEWS.md |
-| `ruby`              | A repository with a version.rb and a CHANGELOG.md |
-| `rust`              | A Rust repository, with a Cargo.toml (either as a crate or workspace, although note that workspaces require a [manifest driven release](https://github.com/googleapis/release-please/blob/main/docs/manifest-releaser.md) and the "cargo-workspace" plugin) and a CHANGELOG.md |
-| `sfdx`              | A repository with a [sfdx-project.json](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) and a CHANGELOG.md |
-| `simple`            | [A repository with a version.txt and a CHANGELOG.md](https://github.com/googleapis/gapic-generator) |
-| `terraform-module`  | [A terraform module, with a version in the README.md, and a CHANGELOG.md](https://github.com/terraform-google-modules/terraform-google-project-factory) |
+### Response objects
 
-## Setting up Release Please
+All fields in response structs are ordinary value types (not pointers or wrappers).
+Response structs also include a special `JSON` field containing metadata about
+each property.
 
-There are a variety of ways you can deploy release-please: 
+```go
+type Animal struct {
+	Name   string `json:"name,nullable"`
+	Owners int    `json:"owners"`
+	Age    int    `json:"age"`
+	JSON   struct {
+		Name        respjson.Field
+		Owner       respjson.Field
+		Age         respjson.Field
+		ExtraFields map[string]respjson.Field
+	} `json:"-"`
+}
+```
 
-### GitHub Action (recommended)
+To handle optional data, use the `.Valid()` method on the JSON field.
+`.Valid()` returns true if a field is not `null`, not present, or couldn't be marshaled.
 
-The easiest way to run Release Please is as a GitHub action. Please see [googleapis/release-please-action](https://github.com/googleapis/release-please-action) for installation and configuration instructions.
+If `.Valid()` is false, the corresponding field will simply be its zero value.
 
-### Running as CLI
+```go
+raw := `{"owners": 1, "name": null}`
 
-Please see [Running release-please CLI](docs/cli.md) for all the configuration options.
+var res Animal
+json.Unmarshal([]byte(raw), &res)
 
-## Bootstrapping your Repository
+// Accessing regular fields
 
-Release Please looks at commits since your last release tag. It may or may not be able to find
-your previous releases. The easiest way to onboard your repository is to
-[bootstrap a manifest config](/docs/cli.md#bootstrapping).
+res.Owners // 1
+res.Name   // ""
+res.Age    // 0
 
-## Customizing Release Please
+// Optional field checks
 
-Release Please provides several configuration options to allow customizing
-your release process. Please see [customizing.md](docs/customizing.md) for more details.
+res.JSON.Owners.Valid() // true
+res.JSON.Name.Valid()   // false
+res.JSON.Age.Valid()    // false
 
-## Supporting Monorepos via Manifest Configuration
+// Raw JSON values
 
-Release Please also supports releasing multiple artifacts from the same repository.
-See more at [manifest-releaser.md](docs/manifest-releaser.md).
+res.JSON.Owners.Raw()                  // "1"
+res.JSON.Name.Raw() == "null"          // true
+res.JSON.Name.Raw() == respjson.Null   // true
+res.JSON.Age.Raw() == ""               // true
+res.JSON.Age.Raw() == respjson.Omitted // true
+```
 
-## Supported Node.js Versions
+These `.JSON` structs also include an `ExtraFields` map containing
+any properties in the json response that were not specified
+in the struct. This can be useful for API features not yet
+present in the SDK.
 
-Our client libraries follow the [Node.js release schedule](https://nodejs.org/en/about/releases/).
-Libraries are compatible with all current _active_ and _maintenance_ versions of
-Node.js.
+```go
+body := res.JSON.ExtraFields["my_unexpected_field"].Raw()
+```
 
-Client libraries targeting some end-of-life versions of Node.js are available, and
-can be installed via npm [dist-tags](https://docs.npmjs.com/cli/dist-tag).
-The dist-tags follow the naming convention `legacy-(version)`.
+### Response Unions
 
-_Legacy Node.js versions are supported as a best effort:_
+In responses, unions are represented by a flattened struct containing all possible fields from each of the
+object variants.
+To convert it to a variant use the `.AsFooVariant()` method or the `.AsAny()` method if present.
 
-* Legacy versions will not be tested in continuous integration.
-* Some security patches may not be able to be backported.
-* Dependencies will not be kept up-to-date, and features will not be backported.
+If a response value union contains primitive values, primitive fields will be alongside
+the properties but prefixed with `Of` and feature the tag `json:"...,inline"`.
 
-#### Legacy tags available
+```go
+type AnimalUnion struct {
+	// From variants [Dog], [Cat]
+	Owner Person `json:"owner"`
+	// From variant [Dog]
+	DogBreed string `json:"dog_breed"`
+	// From variant [Cat]
+	CatBreed string `json:"cat_breed"`
+	// ...
 
-* `legacy-8`: install client libraries from this dist-tag for versions
-  compatible with Node.js 8.
+	JSON struct {
+		Owner respjson.Field
+		// ...
+	} `json:"-"`
+}
 
-## Versioning
+// If animal variant
+if animal.Owner.Address.ZipCode == "" {
+	panic("missing zip code")
+}
 
-This library follows [Semantic Versioning](http://semver.org/).
+// Switch on the variant
+switch variant := animal.AsAny().(type) {
+case Dog:
+case Cat:
+default:
+	panic("unexpected type")
+}
+```
+
+### RequestOptions
+
+This library uses the functional options pattern. Functions defined in the
+`option` package return a `RequestOption`, which is a closure that mutates a
+`RequestConfig`. These options can be supplied to the client or at individual
+requests. For example:
+
+```go
+client := earnapp.NewClient(
+	// Adds a header to every request made by the client
+	option.WithHeader("X-Some-Header", "custom_header_info"),
+)
+
+client.Users.New(context.TODO(), ...,
+	// Override the header
+	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
+	// Add an undocumented field to the request body, using sjson syntax
+	option.WithJSONSet("some.json.path", map[string]string{"my": "object"}),
+)
+```
+
+See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/earn-app-go/option).
+
+### Pagination
+
+This library provides some conveniences for working with paginated list endpoints.
+
+You can use `.ListAutoPaging()` methods to iterate through items across all pages:
+
+Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
+with additional helper methods like `.GetNextPage()`, e.g.:
+
+### Errors
+
+When the API returns a non-success status code, we return an error with type
+`*earnapp.Error`. This contains the `StatusCode`, `*http.Request`, and
+`*http.Response` values of the request, as well as the JSON of the error body
+(much like other response objects in the SDK).
+
+To handle errors, we recommend that you use the `errors.As` pattern:
+
+```go
+_, err := client.Users.New(context.TODO(), earnapp.UserNewParams{
+	WalletAddress: "walletAddress",
+})
+if err != nil {
+	var apierr *earnapp.Error
+	if errors.As(err, &apierr) {
+		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
+		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
+	}
+	panic(err.Error()) // GET "/users": 400 Bad Request { ... }
+}
+```
+
+When other errors occur, they are returned unwrapped; for example,
+if HTTP transport fails, you might receive `*url.Error` wrapping `*net.OpError`.
+
+### Timeouts
+
+Requests do not time out by default; use context to configure a timeout for a request lifecycle.
+
+Note that if a request is [retried](#retries), the context timeout does not start over.
+To set a per-retry timeout, use `option.WithRequestTimeout()`.
+
+```go
+// This sets the timeout for the request, including all the retries.
+ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+defer cancel()
+client.Users.New(
+	ctx,
+	earnapp.UserNewParams{
+		WalletAddress: "walletAddress",
+	},
+	// This sets the per-retry timeout
+	option.WithRequestTimeout(20*time.Second),
+)
+```
+
+### File uploads
+
+Request parameters that correspond to file uploads in multipart requests are typed as
+`io.Reader`. The contents of the `io.Reader` will by default be sent as a multipart form
+part with the file name of "anonymous_file" and content-type of "application/octet-stream".
+
+The file name and content-type can be customized by implementing `Name() string` or `ContentType()
+string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
+file returned by `os.Open` will be sent with the file name on disk.
+
+We also provide a helper `earnapp.File(reader io.Reader, filename string, contentType string)`
+which can be used to wrap any `io.Reader` with the appropriate file name and content type.
+
+### Retries
+
+Certain errors will be automatically retried 2 times by default, with a short exponential backoff.
+We retry by default all connection errors, 408 Request Timeout, 409 Conflict, 429 Rate Limit,
+and >=500 Internal errors.
+
+You can use the `WithMaxRetries` option to configure or disable this:
+
+```go
+// Configure the default for all requests:
+client := earnapp.NewClient(
+	option.WithMaxRetries(0), // default is 2
+)
+
+// Override per-request:
+client.Users.New(
+	context.TODO(),
+	earnapp.UserNewParams{
+		WalletAddress: "walletAddress",
+	},
+	option.WithMaxRetries(5),
+)
+```
+
+### Accessing raw response data (e.g. response headers)
+
+You can access the raw HTTP response data by using the `option.WithResponseInto()` request option. This is useful when
+you need to examine response headers, status codes, or other details.
+
+```go
+// Create a variable to store the HTTP response
+var response *http.Response
+user, err := client.Users.New(
+	context.TODO(),
+	earnapp.UserNewParams{
+		WalletAddress: "walletAddress",
+	},
+	option.WithResponseInto(&response),
+)
+if err != nil {
+	// handle error
+}
+fmt.Printf("%+v\n", user)
+
+fmt.Printf("Status Code: %d\n", response.StatusCode)
+fmt.Printf("Headers: %+#v\n", response.Header)
+```
+
+### Making custom/undocumented requests
+
+This library is typed for convenient access to the documented API. If you need to access undocumented
+endpoints, params, or response properties, the library can still be used.
+
+#### Undocumented endpoints
+
+To make requests to undocumented endpoints, you can use `client.Get`, `client.Post`, and other HTTP verbs.
+`RequestOptions` on the client, such as retries, will be respected when making these requests.
+
+```go
+var (
+    // params can be an io.Reader, a []byte, an encoding/json serializable object,
+    // or a "…Params" struct defined in this library.
+    params map[string]any
+
+    // result can be an []byte, *http.Response, a encoding/json deserializable object,
+    // or a model defined in this library.
+    result *http.Response
+)
+err := client.Post(context.Background(), "/unspecified", params, &result)
+if err != nil {
+    …
+}
+```
+
+#### Undocumented request params
+
+To make requests using undocumented parameters, you may use either the `option.WithQuerySet()`
+or the `option.WithJSONSet()` methods.
+
+```go
+params := FooNewParams{
+    ID:   "id_xxxx",
+    Data: FooNewParamsData{
+        FirstName: earnapp.String("John"),
+    },
+}
+client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
+```
+
+#### Undocumented response properties
+
+To access undocumented response properties, you may either access the raw JSON of the response as a string
+with `result.JSON.RawJSON()`, or get the raw JSON of a particular field on the result with
+`result.JSON.Foo.Raw()`.
+
+Any fields that are not present on the response struct will be saved and can be accessed by `result.JSON.ExtraFields()` which returns the extra fields as a `map[string]Field`.
+
+### Middleware
+
+We provide `option.WithMiddleware` which applies the given
+middleware to requests.
+
+```go
+func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, err error) {
+	// Before the request
+	start := time.Now()
+	LogReq(req)
+
+	// Forward the request to the next handler
+	res, err = next(req)
+
+	// Handle stuff after the request
+	end := time.Now()
+	LogRes(res, err, start - end)
+
+    return res, err
+}
+
+client := earnapp.NewClient(
+	option.WithMiddleware(Logger),
+)
+```
+
+When multiple middlewares are provided as variadic arguments, the middlewares
+are applied left to right. If `option.WithMiddleware` is given
+multiple times, for example first in the client then the method, the
+middleware in the client will run first and the middleware given in the method
+will run next.
+
+You may also replace the default `http.Client` with
+`option.WithHTTPClient(client)`. Only one http client is
+accepted (this overwrites any previous client) and receives requests after any
+middleware has been applied.
+
+## Semantic versioning
+
+This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) conventions, though certain backwards-incompatible changes may be released as minor versions:
+
+1. Changes to library internals which are technically public but not intended or documented for external use. _(Please open a GitHub issue to let us know if you are relying on such internals.)_
+2. Changes that we do not expect to impact the vast majority of users in practice.
+
+We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
+
+We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/earn-app-go/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 
-Contributions welcome! See the [Contributing Guide](https://github.com/googleapis/release-please/blob/main/CONTRIBUTING.md).
-
-For more information on the design of the library, see [design](https://github.com/googleapis/release-please/blob/main/docs/design.md).
-
-## Troubleshooting
-
-For common issues and help troubleshooting your configuration, see [Troubleshooting](https://github.com/googleapis/release-please/blob/main/docs/troubleshooting.md).
-
-## License
-
-Apache Version 2.0
-
-See [LICENSE](https://github.com/googleapis/release-please/blob/main/LICENSE)
-
-## Disclaimer
-
-This is not an official Google product.
+See [the contributing documentation](./CONTRIBUTING.md).
