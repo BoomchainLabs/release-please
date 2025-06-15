@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/stainless-sdks/earn-app-go/internal/requestconfig"
-	"github.com/stainless-sdks/earn-app-go/option"
+	"github.com/BoomchainLabs/release-please/internal/requestconfig"
+	"github.com/BoomchainLabs/release-please/option"
 )
 
 // Client creates a struct with services and top level methods that help with

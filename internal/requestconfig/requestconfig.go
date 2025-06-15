@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/earn-app-go/internal"
-	"github.com/stainless-sdks/earn-app-go/internal/apierror"
-	"github.com/stainless-sdks/earn-app-go/internal/apiform"
-	"github.com/stainless-sdks/earn-app-go/internal/apiquery"
+	"github.com/BoomchainLabs/release-please/internal"
+	"github.com/BoomchainLabs/release-please/internal/apierror"
+	"github.com/BoomchainLabs/release-please/internal/apiform"
+	"github.com/BoomchainLabs/release-please/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {

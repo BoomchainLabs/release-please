@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/earn-app-go
+module github.com/BoomchainLabs/release-please
 
 go 1.21
 

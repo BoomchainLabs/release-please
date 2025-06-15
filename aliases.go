@@ -3,8 +3,8 @@
 package earnapp
 
 import (
-	"github.com/stainless-sdks/earn-app-go/internal/apierror"
-	"github.com/stainless-sdks/earn-app-go/packages/param"
+	"github.com/BoomchainLabs/release-please/internal/apierror"
+	"github.com/BoomchainLabs/release-please/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding

@@ -7,7 +7,7 @@ package apijson
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/earn-app-go/packages/param"
+	"github.com/BoomchainLabs/release-please/packages/param"
 	"reflect"
 	"strconv"
 	"sync"
