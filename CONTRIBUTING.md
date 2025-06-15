@@ -1,79 +1,66 @@
-# How to become a contributor and submit your own code
+## Setting up the environment
 
-**Table of contents**
+To set up the repository, run:
 
-* [Contributor License Agreements](#contributor-license-agreements)
-* [Contributing a patch](#contributing-a-patch)
-* [Running the tests](#running-the-tests)
-* [Releasing the library](#releasing-the-library)
+```sh
+$ ./scripts/bootstrap
+$ ./scripts/lint
+```
 
-## Contributor License Agreements
+This will install all the required dependencies and build the SDK.
 
-We'd love to accept your sample apps and patches! Before we can take them, we
-have to jump a couple of legal hurdles.
+You can also [install go 1.18+ manually](https://go.dev/doc/install).
 
-Please fill out either the individual or corporate Contributor License Agreement
-(CLA).
+## Modifying/Adding code
 
-  * If you are an individual writing original source code and you're sure you
-    own the intellectual property, then you'll need to sign an [individual CLA](https://developers.google.com/open-source/cla/individual).
-  * If you work for a company that wants to allow you to contribute your work,
-    then you'll need to sign a [corporate CLA](https://developers.google.com/open-source/cla/corporate).
+Most of the SDK is generated code. Modifications to code will be persisted between generations, but may
+result in merge conflicts between manual patches and changes from the generator. The generator will never
+modify the contents of the `lib/` and `examples/` directories.
 
-Follow either of the two links above to access the appropriate CLA and
-instructions for how to sign and return it. Once we receive it, we'll be able to
-accept your pull requests.
+## Adding and running examples
 
-## Contributing A Patch
+All files in the `examples/` directory are not modified by the generator and can be freely edited or added to.
 
-1.  Submit an issue describing your proposed change to the repo in question.
-1.  The repo owner will respond to your issue promptly.
-1.  If your proposed change is accepted, and you haven't already done so, sign a
-    Contributor License Agreement (see details above).
-1.  Fork the desired repo, develop and test your code changes.
-1.  Ensure that your code adheres to the existing style in the code to which
-    you are contributing.
-1.  Ensure that your code has an appropriate set of tests which all pass.
-1.  Title your pull request following [Conventional Commits](https://www.conventionalcommits.org/) styling.
-1.  Submit a pull request.
+```go
+# add an example to examples/<your-example>/main.go
 
-### Before you begin
+package main
 
-1.  [Install Node.js LTS][node].
+func main() {
+  // ...
+}
+```
 
-## Running the tests
+```sh
+$ go run ./examples/<your-example>
+```
 
-1.  Install dependencies:
+## Using the repository from source
 
-        npm install
+To use a local version of this library from source in another project, edit the `go.mod` with a replace
+directive. This can be done through the CLI with the following:
 
-1.  Run the tests:
+```sh
+$ go mod edit -replace github.com/stainless-sdks/earn-app-go=/path/to/earn-app-go
+```
 
-        npm test
+## Running tests
 
-1.  Lint (and maybe fix) any changes:
+Most tests require you to [set up a mock server](https://github.com/stoplightio/prism) against the OpenAPI spec to run the tests.
 
-        npm run fix
+```sh
+# you will need npm installed
+$ npx prism mock path/to/your/openapi.yml
+```
 
-## Testing a new feature using CLI
+```sh
+$ ./scripts/test
+```
 
-1. After you've written some new code, in order to test it out, you can use the [CLI][CLI].
+## Formatting
 
-   The below command should be run from the root of the source code:
+This library uses the standard gofmt code formatter:
 
-   ```
-   npm run compile && node build/src/bin/release-please.js release-pr \
-   --token=$GITHUB_TOKEN \
-   --repo-url=<owner>/<repo> [extra options]
-   ```
-   
-   It is equivalent to running the CLI command:
-
-   ```
-   release-please release-pr \
-   --token=$GITHUB_TOKEN \
-   --repo-url=<owner>/<repo> [extra options]
-   ```
-
-[node]: https://nodejs.org/en/
-[CLI]: https://github.com/googleapis/release-please/blob/main/docs/cli.md/
+```sh
+$ ./scripts/format
+```

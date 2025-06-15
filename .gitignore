@@ -1,10 +1,4 @@
-node_modules
-coverage
-.DS_Store
-build/
-system-test/fixtures/gh/*
-.coverage
-__pycache__
-package-lock.json
-debug.sh
+.prism.log
+codegen.log
+Brewfile.lock.json
 .idea/
